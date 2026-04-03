@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Stitch Compliance Console</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "tertiary-fixed": "#acedff",
+                        "on-error": "#690005",
+                        "on-tertiary": "#003640",
+                        "primary-fixed": "#d8e2ff",
+                        "on-surface-variant": "#c3c6d7",
+                        "background": "#0b1326",
+                        "primary-fixed-dim": "#adc6ff",
+                        "tertiary": "#4cd7f6",
+                        "on-primary": "#002e6a",
+                        "on-primary-container": "#ecf0ff",
+                        "on-tertiary-container": "#d7f6ff",
+                        "error": "#ffb4ab",
+                        "surface-container-lowest": "#060e20",
+                        "on-background": "#dae2fd",
+                        "secondary-fixed": "#e9ddff",
+                        "primary": "#adc6ff",
+                        "inverse-surface": "#dae2fd",
+                        "on-surface": "#dae2fd",
+                        "surface": "#0b1326",
+                        "primary-container": "#0f69dc",
+                        "on-tertiary-fixed": "#001f26",
+                        "surface-variant": "#2d3449",
+                        "inverse-primary": "#005ac2",
+                        "secondary": "#d0bcff",
+                        "on-secondary-container": "#c4abff",
+                        "surface-tint": "#adc6ff",
+                        "on-primary-fixed": "#001a42",
+                        "on-secondary": "#3c0091",
+                        "inverse-on-surface": "#283044",
+                        "tertiary-container": "#00788c",
+                        "surface-container-high": "#222a3d",
+                        "tertiary-fixed-dim": "#4cd7f6",
+                        "error-container": "#93000a",
+                        "surface-bright": "#31394d",
+                        "surface-dim": "#0b1326",
+                        "on-secondary-fixed-variant": "#5516be",
+                        "on-error-container": "#ffdad6",
+                        "surface-container": "#171f33",
+                        "secondary-container": "#571bc1",
+                        "outline": "#8d90a0",
+                        "on-primary-fixed-variant": "#004395",
+                        "surface-container-low": "#131b2e",
+                        "secondary-fixed-dim": "#d0bcff",
+                        "on-secondary-fixed": "#23005c",
+                        "outline-variant": "#434655",
+                        "on-tertiary-fixed-variant": "#004e5c",
+                        "surface-container-highest": "#2d3449"
+                    },
+                    fontFamily: {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #0b1326;
+            color: #dae2fd;
+            font-family: 'Inter', sans-serif;
+        }
+        .glass-card {
+            background: rgba(45, 52, 73, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(67, 70, 85, 0.2);
+        }
+        .ai-glow {
+            box-shadow: 0 0 20px rgba(15, 105, 220, 0.15);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #0b1326;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #434655;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="flex min-h-screen">
+<!-- SideNavBar Shell -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-surface-variant/40 dark:bg-[#2d3449]/40 backdrop-blur-xl flex flex-col h-full py-6 px-4 z-50">
+<div class="flex items-center gap-3 mb-10 px-2">
+<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-container to-secondary-container flex items-center justify-center shadow-lg ai-glow">
+<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">psychology</span>
+</div>
+<div>
+<h1 class="text-xl font-bold tracking-tight text-white font-headline">Ethereal AI</h1>
+<p class="text-[10px] uppercase tracking-widest text-primary font-bold">Predictive Prism</p>
+</div>
+</div>
+<nav class="flex-1 space-y-2 overflow-y-auto custom-scrollbar">
+<!-- Dashboard Tab (Active) -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-white bg-primary-container/30 dark:bg-[#0f69dc]/20 shadow-[0_0_15px_rgba(15,105,220,0.3)] font-semibold border-r-2 border-[#0f69dc] transition-all duration-300" href="#">
+<span class="material-symbols-outlined text-primary" data-icon="dashboard">dashboard</span>
+<span class="font-label">Dashboard</span>
+</a>
+<!-- Analytics Tab (Active Check Fallback) -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 dark:text-[#434655] hover:text-white hover:bg-white/10 dark:hover:bg-[#31394d] transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-label">Analytics</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 dark:text-[#434655] hover:text-white hover:bg-white/10 dark:hover:bg-[#31394d] transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="cloud_upload">cloud_upload</span>
+<span class="font-label">Upload</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 dark:text-[#434655] hover:text-white hover:bg-white/10 dark:hover:bg-[#31394d] transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+<span class="font-label">Transcript</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 dark:text-[#434655] hover:text-white hover:bg-white/10 dark:hover:bg-[#31394d] transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="psychology">psychology</span>
+<span class="font-label">AI Insights</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 dark:text-[#434655] hover:text-white hover:bg-white/10 dark:hover:bg-[#31394d] transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="assessment">assessment</span>
+<span class="font-label">Reports</span>
+</a>
+</nav>
+<div class="mt-auto px-2">
+<div class="p-4 rounded-xl bg-surface-container-low/50 border border-outline-variant/10">
+<p class="text-xs text-outline mb-2">System Status</p>
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-tertiary animate-pulse shadow-[0_0_8px_#4cd7f6]"></div>
+<span class="text-xs font-medium text-on-surface">Neural Engine Live</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 ml-64 bg-background min-h-screen">
+<!-- TopNavBar Shell -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] h-16 bg-surface/80 dark:bg-[#0b1326]/80 backdrop-blur-md flex justify-between items-center px-8 z-40 shadow-[0_20px_50px_rgba(0,26,66,0.3)]">
+<div class="flex items-center gap-6 flex-1">
+<h2 class="text-lg font-black text-white font-headline tracking-tight">Ethereal Intelligence</h2>
+<div class="relative w-96 group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary transition-colors text-sm">search</span>
+<input class="w-full bg-surface-container-low border-none rounded-full py-2 pl-10 pr-4 text-sm focus:ring-1 focus:ring-primary-container text-on-surface placeholder:text-outline/50 transition-all" placeholder="Search analytics, agents, or transcripts..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-5">
+<div class="flex items-center gap-2 bg-surface-container-low px-3 py-1.5 rounded-lg border border-outline-variant/10">
+<span class="material-symbols-outlined text-tertiary text-sm">calendar_today</span>
+<span class="text-xs font-medium text-on-surface">Oct 12 - Oct 19, 2023</span>
+</div>
+<button class="relative p-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-full transition-all">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full border-2 border-surface shadow-[0_0_10px_#0f69dc]"></span>
+</button>
+<button class="p-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-full transition-all">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<div class="h-8 w-[1px] bg-outline-variant/20 mx-2"></div>
+<div class="flex items-center gap-3">
+<img alt="User Administrator Profile" class="w-8 h-8 rounded-full border border-primary-container/30 object-cover" data-alt="Close up portrait of a professional male executive in a dark suit with soft office lighting background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAt6CxEcD9KBqVX74f4gvFh2WXlbVW4iXvinyaecm89723TrQDZq4UbVqrLoktQxsSph96Ug_9LosvejXh-TJjTYxs0Qp-D_dsXMtPJGks9Rysz4Y2K5_UWMAt2BhUPR6HsBEz0M04lnTwKftiSPRKJ5RpBYy3-ZXLbDFlG15jN-FHpngc4a1N9nH1ncuFo_0Uu0r_3UZDseaeJazSQDs-mHcSBmt3_mrTtqHOU4h59Qu8o821Ka7-T1ykFKhGNGN2OWMeO6sXpqmrl"/>
+</div>
+</div>
+</header>
+<!-- Dashboard Content -->
+<div class="pt-24 pb-12 px-8">
+<!-- Hero Stats / Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+<div class="glass-card p-6 rounded-xl flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-start mb-4">
+<span class="text-label-sm font-bold uppercase tracking-widest text-outline">Total Calls</span>
+<span class="text-tertiary material-symbols-outlined bg-tertiary/10 p-2 rounded-lg">call</span>
+</div>
+<h3 class="text-3xl font-bold font-headline text-white mb-1">18,640</h3>
+<p class="text-xs text-tertiary flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">trending_up</span> +6.3% vs last week
+                        </p>
+</div>
+</div>
+<div class="glass-card p-6 rounded-xl flex flex-col justify-between overflow-hidden relative group">
+<div class="absolute -right-4 -bottom-4 w-24 h-24 bg-primary-container/10 rounded-full blur-3xl group-hover:bg-primary-container/20 transition-all"></div>
+<div>
+<div class="flex justify-between items-start mb-4">
+<span class="text-label-sm font-bold uppercase tracking-widest text-outline">Avg. Handle Time</span>
+<span class="text-primary material-symbols-outlined bg-primary/10 p-2 rounded-lg">timer</span>
+</div>
+<h3 class="text-3xl font-bold font-headline text-white mb-1">3m 58s</h3>
+<p class="text-xs text-tertiary flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">trending_down</span> -12s vs target
+                        </p>
+</div>
+</div>
+<div class="glass-card p-6 rounded-xl flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-start mb-4">
+<span class="text-label-sm font-bold uppercase tracking-widest text-outline">CSAT Score</span>
+<span class="text-secondary material-symbols-outlined bg-secondary/10 p-2 rounded-lg" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<h3 class="text-3xl font-bold font-headline text-white mb-1">4.88</h3>
+<div class="w-full bg-outline-variant/10 h-1.5 rounded-full mt-2 overflow-hidden">
+<div class="bg-gradient-to-r from-secondary to-primary h-full w-[98%]"></div>
+</div>
+</div>
+</div>
+<div class="glass-card p-6 rounded-xl bg-gradient-to-br from-primary-container/40 to-secondary-container/40 border-none shadow-lg shadow-primary-container/10">
+<div class="flex justify-between items-start mb-4">
+<span class="text-label-sm font-bold uppercase tracking-widest text-on-primary-container">AI Sentiment</span>
+<span class="material-symbols-outlined text-white animate-pulse">auto_awesome</span>
+</div>
+<h3 class="text-3xl font-bold font-headline text-white mb-1">92% Positive</h3>
+<p class="text-xs text-on-primary-container/80 leading-tight">Neural analysis stable across Hindi/Tamil queues; sentiment uplift after SOP refresh.</p>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+<div class="glass-card p-6 rounded-xl flex flex-col gap-3">
+<div class="flex items-start justify-between">
+<div>
+<p class="text-xs uppercase tracking-widest text-outline font-bold">Compliance</p>
+<h3 class="text-xl font-semibold font-headline text-white">SOP adherence</h3>
+<p class="text-sm text-outline">Coverage across payment, IDV, and risk disclosures.</p>
+</div>
+<span class="material-symbols-outlined text-primary bg-primary/10 p-2 rounded-lg">verified_user</span>
+</div>
+<div class="space-y-2">
+<div class="flex items-center justify-between text-sm text-on-surface">
+<span>Critical phrases present</span>
+<span class="font-semibold text-white">96.4%</span>
+</div>
+<div class="w-full bg-outline-variant/10 h-2 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[96%]"></div>
+</div>
+<div class="flex items-center justify-between text-sm text-on-surface">
+<span>Escalations avoided</span>
+<span class="font-semibold text-tertiary">+11%</span>
+</div>
+</div>
+</div>
+
+<div class="glass-card p-6 rounded-xl flex flex-col gap-3">
+<div class="flex items-start justify-between">
+<div>
+<p class="text-xs uppercase tracking-widest text-outline font-bold">Payments</p>
+<h3 class="text-xl font-semibold font-headline text-white">Offer detection</h3>
+<p class="text-sm text-outline">EMI vs full vs partial settlement cues.</p>
+</div>
+<span class="material-symbols-outlined text-secondary bg-secondary/10 p-2 rounded-lg" style="font-variation-settings: 'FILL' 1;">credit_score</span>
+</div>
+<ul class="text-sm text-outline space-y-1">
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-primary text-sm">check</span>EMI mentioned in 71% of calls</li>
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-primary text-sm">check</span>Full-payment incentives surfaced in 38%</li>
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-error text-sm">error</span>Downpayment missing in 9 calls</li>
+</ul>
+</div>
+
+<div class="glass-card p-6 rounded-xl flex flex-col gap-4">
+<div class="flex items-start justify-between">
+<div>
+<p class="text-xs uppercase tracking-widest text-outline font-bold">Risk</p>
+<h3 class="text-xl font-semibold font-headline text-white">Alerts & drops</h3>
+<p class="text-sm text-outline">Track refusal and negative sentiment spikes.</p>
+</div>
+<span class="material-symbols-outlined text-error bg-error/10 p-2 rounded-lg">warning</span>
+</div>
+<div class="flex items-center justify-between text-sm text-on-surface">
+<span>Refund threats</span>
+<span class="px-3 py-1 rounded-full bg-error/15 text-error text-xs font-semibold">12 this hour</span>
+</div>
+<div class="flex items-center justify-between text-sm text-on-surface">
+<span>Supervisor requests</span>
+<span class="px-3 py-1 rounded-full bg-secondary/15 text-secondary text-xs font-semibold">+4 vs avg</span>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-2 h-2 rounded-full bg-tertiary animate-pulse shadow-[0_0_8px_#4cd7f6]"></div>
+<p class="text-xs text-outline">Auto-alerts trigger when risk phrases cluster within 45 seconds.</p>
+</div>
+</div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
+<div class="glass-card p-6 rounded-xl space-y-4" id="audio-panel">
+<div class="flex items-start justify-between">
+<div>
+<p class="text-xs uppercase tracking-widest text-outline font-bold">Audio QA</p>
+<h3 class="text-xl font-semibold font-headline text-white">Live transcript review</h3>
+<p class="text-sm text-outline">Switch views: transcript, summary, SOP gaps.</p>
+</div>
+<div class="flex gap-2" id="audio-tabs">
+<button class="px-3 py-1.5 text-xs rounded-full bg-primary-container text-white font-semibold shadow-primary-container/30" data-tab="transcript">Transcript</button>
+<button class="px-3 py-1.5 text-xs rounded-full bg-surface-container-high text-outline" data-tab="summary">Summary</button>
+<button class="px-3 py-1.5 text-xs rounded-full bg-surface-container-high text-outline" data-tab="sop">SOP</button>
+</div>
+</div>
+<div class="space-y-3">
+<div class="tab-panel" data-panel="transcript">
+<p class="text-sm text-outline leading-relaxed">Customer: "I need to pause payments this month."<br/>Agent: "I can move you to a lighter EMI; need IDV and consent on record."</p>
+<p class="text-[11px] text-outline">Language auto-detected: Hindi ➜ English mix • Latency: 620ms</p>
+</div>
+<div class="tab-panel hidden" data-panel="summary">
+<p class="text-sm text-outline leading-relaxed">Agent offered EMI deferral, confirmed IDV, captured consent; shared repayment calendar and late fee warning.</p>
+<div class="flex gap-3 text-xs text-on-surface">
+<span class="px-3 py-1 rounded-full bg-tertiary/10 text-tertiary font-semibold">Positive sentiment</span>
+<span class="px-3 py-1 rounded-full bg-primary/10 text-primary font-semibold">Offer accepted</span>
+</div>
+</div>
+<div class="tab-panel hidden" data-panel="sop">
+<div class="flex items-center justify-between text-sm text-on-surface mb-2">
+<span>Required phrases hit</span>
+<span class="font-semibold text-white">9 / 10</span>
+</div>
+<div class="w-full bg-outline-variant/10 h-2 rounded-full overflow-hidden mb-2">
+<div class="bg-primary h-full w-[90%]"></div>
+</div>
+<p class="text-[11px] text-error">Missing: "Downpayment option" • Add before CTA.</p>
+</div>
+</div>
+</div>
+
+<div class="glass-card p-6 rounded-xl space-y-4">
+<div class="flex items-start justify-between">
+<div>
+<p class="text-xs uppercase tracking-widest text-outline font-bold">Filters</p>
+<h3 class="text-xl font-semibold font-headline text-white">Quick slicers</h3>
+<p class="text-sm text-outline">Segment agents by status or risk.</p>
+</div>
+<span class="material-symbols-outlined text-primary bg-primary/10 p-2 rounded-lg">filter_alt</span>
+</div>
+<div class="flex flex-wrap gap-2" id="filter-pills">
+<button class="px-3 py-1.5 rounded-full bg-primary-container text-white text-xs font-semibold" data-filter="all">All</button>
+<button class="px-3 py-1.5 rounded-full bg-surface-container-high text-outline text-xs" data-filter="in-call">In Call</button>
+<button class="px-3 py-1.5 rounded-full bg-surface-container-high text-outline text-xs" data-filter="available">Available</button>
+<button class="px-3 py-1.5 rounded-full bg-surface-container-high text-outline text-xs" data-filter="break">Break</button>
+</div>
+<div class="flex items-center gap-3 text-xs text-outline">
+<span class="w-2 h-2 rounded-full bg-error"></span>
+<p>Red rows highlight calls with overlapping risk phrases in the last 5 minutes.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Chart Sections -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+<!-- Main Trends Chart -->
+<div class="lg:col-span-2 glass-card p-6 rounded-xl relative overflow-hidden">
+<div class="flex justify-between items-center mb-8">
+<div>
+<h4 class="text-lg font-semibold font-headline text-white">Call Volume Trends</h4>
+<p class="text-xs text-outline">Real-time hourly call metrics</p>
+</div>
+<div class="flex gap-2">
+<button class="px-3 py-1 text-[10px] font-bold rounded-full bg-surface-container-highest text-white">Hourly</button>
+<button class="px-3 py-1 text-[10px] font-bold rounded-full text-outline hover:text-white transition-colors">Daily</button>
+</div>
+</div>
+<!-- SVG Chart Simulation -->
+<div class="h-64 w-full relative flex items-end">
+<div class="absolute inset-0 grid grid-rows-4 w-full">
+<div class="border-t border-outline-variant/5"></div>
+<div class="border-t border-outline-variant/5"></div>
+<div class="border-t border-outline-variant/5"></div>
+<div class="border-t border-outline-variant/5"></div>
+</div>
+<svg class="w-full h-full relative z-10" preserveaspectratio="none" viewbox="0 0 1000 200">
+<defs>
+<lineargradient id="chartGradient" x1="0%" x2="0%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#0f69dc" stop-opacity="0.5"></stop>
+<stop offset="100%" stop-color="#0f69dc" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+<path d="M0,150 Q100,140 200,100 T400,120 T600,60 T800,80 T1000,40 V200 H0 Z" fill="url(#chartGradient)"></path>
+<path d="M0,150 Q100,140 200,100 T400,120 T600,60 T800,80 T1000,40" fill="none" stroke="#0f69dc" stroke-width="3"></path>
+</svg>
+<div class="absolute left-0 top-0 h-full flex flex-col justify-between text-[10px] text-outline/40 -ml-4">
+<span>150</span><span>100</span><span>50</span><span>0</span>
+</div>
+</div>
+<div class="flex justify-between mt-4 px-2 text-[10px] text-outline font-medium">
+<span>08:00</span><span>10:00</span><span>12:00</span><span>14:00</span><span>16:00</span><span>18:00</span><span>20:00</span>
+</div>
+</div>
+<!-- Heatmap Panel -->
+<div class="glass-card p-6 rounded-xl">
+<h4 class="text-lg font-semibold font-headline text-white mb-1">Peak Times</h4>
+<p class="text-xs text-outline mb-6">Volume density by weekday</p>
+<div class="space-y-3">
+<div class="grid grid-cols-8 gap-1 items-center">
+<span class="text-[10px] text-outline uppercase font-bold">Mon</span>
+<div class="h-6 bg-primary-container/20 rounded"></div>
+<div class="h-6 bg-primary-container/40 rounded"></div>
+<div class="h-6 bg-primary-container/80 rounded"></div>
+<div class="h-6 bg-primary-container/90 rounded shadow-[0_0_8px_#0f69dc]"></div>
+<div class="h-6 bg-primary-container/60 rounded"></div>
+<div class="h-6 bg-primary-container/30 rounded"></div>
+<div class="h-6 bg-primary-container/10 rounded"></div>
+</div>
+<div class="grid grid-cols-8 gap-1 items-center">
+<span class="text-[10px] text-outline uppercase font-bold">Tue</span>
+<div class="h-6 bg-primary-container/10 rounded"></div>
+<div class="h-6 bg-primary-container/30 rounded"></div>
+<div class="h-6 bg-primary-container/60 rounded"></div>
+<div class="h-6 bg-primary-container/90 rounded shadow-[0_0_8px_#0f69dc]"></div>
+<div class="h-6 bg-primary-container/80 rounded"></div>
+<div class="h-6 bg-primary-container/40 rounded"></div>
+<div class="h-6 bg-primary-container/10 rounded"></div>
+</div>
+<div class="grid grid-cols-8 gap-1 items-center">
+<span class="text-[10px] text-outline uppercase font-bold">Wed</span>
+<div class="h-6 bg-primary-container/30 rounded"></div>
+<div class="h-6 bg-primary-container/50 rounded"></div>
+<div class="h-6 bg-primary-container/90 rounded shadow-[0_0_8px_#0f69dc]"></div>
+<div class="h-6 bg-primary-container/80 rounded"></div>
+<div class="h-6 bg-primary-container/60 rounded"></div>
+<div class="h-6 bg-primary-container/40 rounded"></div>
+<div class="h-6 bg-primary-container/20 rounded"></div>
+</div>
+<div class="grid grid-cols-8 gap-1 items-center">
+<span class="text-[10px] text-outline uppercase font-bold">Thu</span>
+<div class="h-6 bg-primary-container/20 rounded"></div>
+<div class="h-6 bg-primary-container/40 rounded"></div>
+<div class="h-6 bg-primary-container/80 rounded"></div>
+<div class="h-6 bg-primary-container/90 rounded shadow-[0_0_8px_#0f69dc]"></div>
+<div class="h-6 bg-primary-container/90 rounded shadow-[0_0_8px_#0f69dc]"></div>
+<div class="h-6 bg-primary-container/50 rounded"></div>
+<div class="h-6 bg-primary-container/10 rounded"></div>
+</div>
+<div class="grid grid-cols-8 gap-1 items-center">
+<span class="text-[10px] text-outline uppercase font-bold">Fri</span>
+<div class="h-6 bg-primary-container/10 rounded"></div>
+<div class="h-6 bg-primary-container/20 rounded"></div>
+<div class="h-6 bg-primary-container/40 rounded"></div>
+<div class="h-6 bg-primary-container/60 rounded shadow-[0_0_8px_#0f69dc]"></div>
+<div class="h-6 bg-primary-container/40 rounded"></div>
+<div class="h-6 bg-primary-container/30 rounded"></div>
+<div class="h-6 bg-primary-container/10 rounded"></div>
+</div>
+</div>
+<div class="mt-8 flex items-center justify-between">
+<span class="text-[10px] text-outline">Low Volume</span>
+<div class="flex-1 h-1.5 mx-4 rounded-full bg-gradient-to-r from-primary-container/10 to-primary-container"></div>
+<span class="text-[10px] text-outline">High Volume</span>
+</div>
+</div>
+</div>
+<!-- Agent Performance Table -->
+<div class="glass-card rounded-xl overflow-hidden">
+<div class="px-6 py-6 border-b border-outline-variant/10 flex justify-between items-center">
+<div>
+<h4 class="text-lg font-semibold font-headline text-white">Agent Performance Metrics</h4>
+<p class="text-xs text-outline">Individual productivity and quality scores</p>
+</div>
+<div class="flex gap-4">
+<select class="bg-surface-container-low border border-outline-variant/20 rounded-lg text-xs py-1.5 px-3 text-on-surface outline-none">
+<option>All Teams</option>
+<option>North Region</option>
+<option>Support Tier 1</option>
+</select>
+<button class="bg-primary-container text-white text-xs px-4 py-1.5 rounded-lg font-semibold shadow-lg shadow-primary-container/20 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">download</span> Export Report
+                        </button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead>
+<tr class="bg-surface-container-low text-outline text-[10px] uppercase tracking-widest font-bold">
+<th class="px-6 py-4">Agent Name</th>
+<th class="px-6 py-4">Status</th>
+<th class="px-6 py-4">Total Calls</th>
+<th class="px-6 py-4">Avg Handle Time</th>
+<th class="px-6 py-4">CSAT Score</th>
+<th class="px-6 py-4">Sentiment Rank</th>
+<th class="px-6 py-4 text-right">Action</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/10">
+<tr class="hover:bg-white/5 transition-colors group" data-status="in-call">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<img alt="Agent Profile" class="w-8 h-8 rounded-full border border-outline-variant/30 object-cover" data-alt="Professional portrait of a confident middle-aged female customer service lead in a modern office" src="https://lh3.googleusercontent.com/aida-public/AB6AXuApKIDoR9gkWx09RFrpQisXMMOzWRnY9XGVA0gNacMPnDanTDbJphBda5UflO6uxdXGYup3s6XNCWRHOqaC-sG5dytV4qsJQvEp-3Zgczb75taRhYDG3M1UIvslaEBxI2AvWnc06oTOIViEpZW6KJw7oDl1E0Fpqv4ppM5HrEN_SY2kv4T15fO_nyZ801gDH5O7fsn1CUz9ugX76b4ehrIwA8te8rVbF-4O8JAP36CF-zYhzzqt62BUTPepF5zsNvxpeGxVwinrxRMm"/>
+<div>
+<p class="text-sm font-semibold text-white">Sarah Jenkins</p>
+<p class="text-[10px] text-outline">Senior Specialist</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="flex items-center gap-1.5 text-xs text-tertiary">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span> In Call
+                                    </span>
+</td>
+<td class="px-6 py-4 text-sm text-on-surface">142</td>
+<td class="px-6 py-4 text-sm text-on-surface">3m 45s</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-1">
+<span class="text-sm font-bold text-white">4.9</span>
+<span class="material-symbols-outlined text-secondary text-xs" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="w-16 h-2 bg-outline-variant/10 rounded-full overflow-hidden">
+<div class="bg-tertiary h-full w-[90%]"></div>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="p-2 rounded-lg hover:bg-surface-container-highest text-outline transition-colors agent-action" data-agent="Sarah Jenkins" data-role="Senior Specialist" data-calls="142" data-status="In Call" data-csat="4.9" data-sentiment="0.90">
+<span class="material-symbols-outlined text-lg">more_vert</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-white/5 transition-colors group" data-status="available">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<img alt="Agent Profile" class="w-8 h-8 rounded-full border border-outline-variant/30 object-cover" data-alt="Close up of a young professional man wearing a headset with a soft blurry background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAkHgv3pUGNze5RyPAfZJEXwg3ekQE-xyoFp5-tS5xugoi0QkuYDwk_snf6Ym59Sy_9A4nN0k2HU1zYTNoqZIBDfWEW8xqLrwLfjFfc5OVvS8grfdNkZrLGG3Wgs75Ex5FDgGWlOecWgbSgnfMIwE1od9kgt9YvHw_EHW7gUPWETFvusgrPU8XLDUZ0WfeFg__ClKJVF9Nuh9CAjmRSfWtUE3J8jluQvm0dmnxKQ2QPAeG_mk05XaEfP3mgl0DC9czsEPOfaD3uVmpO"/>
+<div>
+<p class="text-sm font-semibold text-white">Marcus Thorne</p>
+<p class="text-[10px] text-outline">Junior Associate</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="flex items-center gap-1.5 text-xs text-outline">
+<span class="w-1.5 h-1.5 rounded-full bg-outline"></span> Available
+                                    </span>
+</td>
+<td class="px-6 py-4 text-sm text-on-surface">98</td>
+<td class="px-6 py-4 text-sm text-on-surface">4m 12s</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-1">
+<span class="text-sm font-bold text-white">4.2</span>
+<span class="material-symbols-outlined text-secondary text-xs" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="w-16 h-2 bg-outline-variant/10 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[65%]"></div>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="p-2 rounded-lg hover:bg-surface-container-highest text-outline transition-colors agent-action" data-agent="Marcus Thorne" data-role="Junior Associate" data-calls="98" data-status="Available" data-csat="4.2" data-sentiment="0.65">
+<span class="material-symbols-outlined text-lg">more_vert</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-white/5 transition-colors group" data-status="break">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<img alt="Agent Profile" class="w-8 h-8 rounded-full border border-outline-variant/30 object-cover" data-alt="Professional headshot of a smiling young woman in a bright office setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD9YbEmDn_9YDmu92Z87V9ycL1brfH9MUaLaI11Og2cW5lOp6YNaSc2wK0RtVKfRrRhvX2r2MtE--YVj-BAD5Off1Vyhrz1lhcM3-u9-hP5MTFJB6FRIpIviD13q6jWB0dN-hMKycNIs6q_x_M8GrlgWZ7qxW_yDi_RKTV5qcY5rWYdxvDPEPNcq4gDK-HVo3cowvkXnEjYr3mvu6wQdwOO-ag8RV89O2QPAABy58hAP-0Lbsk5q7Ht5SbKKkT5S2G24viaMlJOpr9J"/>
+<div>
+<p class="text-sm font-semibold text-white">Elena Rodriguez</p>
+<p class="text-[10px] text-outline">Retention Lead</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="flex items-center gap-1.5 text-xs text-error">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span> Break
+                                    </span>
+</td>
+<td class="px-6 py-4 text-sm text-on-surface">115</td>
+<td class="px-6 py-4 text-sm text-on-surface">5m 02s</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-1">
+<span class="text-sm font-bold text-white">4.7</span>
+<span class="material-symbols-outlined text-secondary text-xs" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="w-16 h-2 bg-outline-variant/10 rounded-full overflow-hidden">
+<div class="bg-tertiary h-full w-[82%]"></div>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="p-2 rounded-lg hover:bg-surface-container-highest text-outline transition-colors agent-action" data-agent="Elena Rodriguez" data-role="Retention Lead" data-calls="115" data-status="Break" data-csat="4.7" data-sentiment="0.82">
+<span class="material-symbols-outlined text-lg">more_vert</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</main>
+<!-- FAB Action (Suppressed as per rules for analytics focus, but showing layout capability if needed elsewhere) -->
+<!-- Hidden here as we are on an analytics dashboard -->
+<div id="agent-modal" class="hidden fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center px-4">
+<div class="glass-card rounded-xl p-6 w-full max-w-md space-y-4">
+<div class="flex items-start justify-between">
+<div>
+<p class="text-xs uppercase tracking-widest text-outline font-bold">Agent snapshot</p>
+<h3 class="text-xl font-semibold font-headline text-white" id="agent-name">--</h3>
+<p class="text-sm text-outline" id="agent-role">--</p>
+</div>
+<button id="modal-close" class="p-2 rounded-full bg-surface-container-high text-outline hover:text-white">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<div class="grid grid-cols-2 gap-3 text-sm text-on-surface">
+<div class="p-3 rounded-lg bg-surface-container-low/60 border border-outline-variant/10">
+<p class="text-[11px] text-outline">Status</p>
+<p class="font-semibold text-white" id="agent-status">--</p>
+</div>
+<div class="p-3 rounded-lg bg-surface-container-low/60 border border-outline-variant/10">
+<p class="text-[11px] text-outline">Calls</p>
+<p class="font-semibold text-white" id="agent-calls">--</p>
+</div>
+<div class="p-3 rounded-lg bg-surface-container-low/60 border border-outline-variant/10">
+<p class="text-[11px] text-outline">CSAT</p>
+<p class="font-semibold text-white" id="agent-csat">--</p>
+</div>
+<div class="p-3 rounded-lg bg-surface-container-low/60 border border-outline-variant/10">
+<p class="text-[11px] text-outline">Sentiment</p>
+<p class="font-semibold text-white" id="agent-sentiment">--</p>
+</div>
+</div>
+<p class="text-xs text-outline">Uses lightweight vanilla JS; swap with API calls for real data.</p>
+</div>
+</div>
+<script>
+(() => {
+    const tabs = document.querySelectorAll('#audio-tabs [data-tab]');
+    const panels = document.querySelectorAll('.tab-panel');
+    tabs.forEach((tab) => {
+        tab.addEventListener('click', () => {
+            tabs.forEach((btn) => btn.classList.replace('bg-primary-container', 'bg-surface-container-high'));
+            tabs.forEach((btn) => btn.classList.replace('text-white', 'text-outline'));
+            tab.classList.replace('bg-surface-container-high', 'bg-primary-container');
+            tab.classList.replace('text-outline', 'text-white');
+            const target = tab.getAttribute('data-tab');
+            panels.forEach((panel) => panel.classList.toggle('hidden', panel.getAttribute('data-panel') !== target));
+        });
+    });
+
+    const filters = document.querySelectorAll('#filter-pills [data-filter]');
+    const rows = document.querySelectorAll('tbody tr[data-status]');
+    filters.forEach((filter) => {
+        filter.addEventListener('click', () => {
+            filters.forEach((pill) => {
+                pill.classList.remove('bg-primary-container', 'text-white');
+                pill.classList.add('bg-surface-container-high', 'text-outline');
+            });
+            filter.classList.add('bg-primary-container', 'text-white');
+            const target = filter.getAttribute('data-filter');
+            rows.forEach((row) => {
+                const status = row.getAttribute('data-status');
+                const visible = target === 'all' || status === target;
+                row.classList.toggle('hidden', !visible);
+            });
+        });
+    });
+
+    const modal = document.getElementById('agent-modal');
+    const modalFields = {
+        name: document.getElementById('agent-name'),
+        role: document.getElementById('agent-role'),
+        status: document.getElementById('agent-status'),
+        calls: document.getElementById('agent-calls'),
+        csat: document.getElementById('agent-csat'),
+        sentiment: document.getElementById('agent-sentiment'),
+    };
+    const closeModal = () => modal.classList.add('hidden');
+    document.getElementById('modal-close')?.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    document.querySelectorAll('.agent-action').forEach((btn) => {
+        btn.addEventListener('click', () => {
+            modalFields.name.textContent = btn.dataset.agent || '--';
+            modalFields.role.textContent = btn.dataset.role || '--';
+            modalFields.status.textContent = btn.dataset.status || '--';
+            modalFields.calls.textContent = btn.dataset.calls || '--';
+            modalFields.csat.textContent = btn.dataset.csat || '--';
+            modalFields.sentiment.textContent = btn.dataset.sentiment || '--';
+            modal.classList.remove('hidden');
+        });
+    });
+})();
+</script>
+</body></html>

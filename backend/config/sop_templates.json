@@ -1,0 +1,13 @@
+{
+  "default": {
+    "required_phrases": [
+      "greeting",
+      "verify customer details",
+      "explain product",
+      "mention payment options",
+      "offer emi",
+      "confirm next steps"
+    ],
+    "min_score": 0.7
+  }
+}

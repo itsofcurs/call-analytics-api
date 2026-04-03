@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+  
+  body {
+    @apply bg-background text-on-background font-body antialiased;
+    background: radial-gradient(circle at 50% 0%, #171f33 0%, #0b1326 100%);
+    min-height: 100vh;
+  }
+}
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(189, 198, 224, 0.1);
+  border-radius: 20px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(189, 198, 224, 0.2);
+}
+
+.glass-card {
+  @apply bg-surface-container-low/40 backdrop-blur-2xl border border-outline-variant/10 shadow-[0_30px_60px_rgba(0,0,0,0.4)];
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card:hover {
+  @apply border-outline-variant/30;
+  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5);
+}
+
+.ai-glow {
+  box-shadow: 0 0 30px rgba(15, 105, 220, 0.2), 0 0 10px rgba(76, 215, 246, 0.1);
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
