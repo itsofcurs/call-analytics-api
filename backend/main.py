@@ -9,7 +9,9 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from routes.analyze import router as analyze_router
 
-load_dotenv()
+# Load environment variables from the .env file in the current directory
+dotenv_path = os.path.join(os.path.dirname(__file__), ".env")
+load_dotenv(dotenv_path)
 
 app = FastAPI(title="AI Document Analysis API", version="0.1.0")
 
