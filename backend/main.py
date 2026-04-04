@@ -1,3 +1,8 @@
+import sys
+import os
+# Add the current directory (backend) to the Python path so sub-packages work correctly
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
 from fastapi import FastAPI
 from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
