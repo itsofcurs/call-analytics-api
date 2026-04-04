@@ -1,10 +1,9 @@
 import base64
 import os
 import tempfile
-import whisper
 import time
 import re
-import subprocess
+import requests
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, Request
 from pydantic import BaseModel
 from typing import List, Dict, Any
@@ -14,16 +13,12 @@ from services.summarizer import summarize_text
 from utils.file_type import is_allowed_content_type
 from utils.auth import verify_api_key
 
+DEEPGRAM_API_KEY = os.getenv("DEEPGRAM_API_KEY", "")
+
 router = APIRouter(prefix="", tags=["analysis"])
 ALLOWED_AUDIO_TYPES = {"audio/mpeg", "audio/wav", "audio/mp3", "audio/x-wav"}
 
-# Load Whisper model globally - Track 3 Performance Optimization
-print("Attempting to load Whisper 'base' model globally for better accuracy...")
-try:
-    model = whisper.load_model("base")
-except Exception:
-    print("Falling back to Whisper 'small' model...")
-    model = whisper.load_model("small")
+# Transcription is handled via Deepgram REST API (no local model required)
 
 # BONUS: Vector DB / In-Memory Store
 TRANSCRIPT_DB = []
@@ -197,54 +192,36 @@ async def analyze_call(
         except Exception:
             return {"status": "error", "message": "Invalid base64 encoding"}
 
-        temp_input_path = None
         try:
-            with tempfile.NamedTemporaryFile(delete=False, suffix=f".{request.audioFormat}") as temp_audio:
-                temp_audio.write(audio_bytes)
-                temp_audio.flush()
-                temp_input_path = temp_audio.name
-                
-            # Multilingual transcription logic
-            def run_deepgram_stt():
-                try:
-                    import urllib.request
-                    import json
-                    lang = request.language.lower()
-                    if lang == "tamil":
-                        url = "https://api.deepgram.com/v1/listen?model=nova-3&smart_format=true&language=ta"
-                    elif lang == "hindi":
-                        url = "https://api.deepgram.com/v1/listen?model=nova-2&smart_format=true&language=hi"
-                    else:
-                        url = "https://api.deepgram.com/v1/listen?model=nova-2&smart_format=true&language=en-IN"
-                    
-                    req = urllib.request.Request(url, data=audio_bytes, headers={
-                        "Authorization": "Token f0897d4e6b5d12ee480639476bbc6e2c2032e752",
-                        "Content-Type": f"audio/{request.audioFormat}"
-                    })
-                    with urllib.request.urlopen(req) as response:
-                        res = json.loads(response.read().decode())
-                        return res["results"]["channels"][0]["alternatives"][0]["transcript"]
-                except Exception as e:
-                    print(f"Deepgram STT Error: {e}")
-                    return ""
+            # --- Deepgram transcription ---
+            lang = request.language.lower()
+            if lang == "tamil":
+                dg_url = "https://api.deepgram.com/v1/listen?model=nova-3&smart_format=true&language=ta"
+            elif lang == "hindi":
+                dg_url = "https://api.deepgram.com/v1/listen?model=nova-2&smart_format=true&language=hi"
+            else:
+                dg_url = "https://api.deepgram.com/v1/listen?model=nova-2&smart_format=true&language=en-IN"
 
-            def run_whisper():
-                try:
-                    if request.language.lower() == "tamil":
-                        return model.transcribe(temp_input_path, fp16=False)
-                    return model.transcribe(temp_input_path, language="en", fp16=False)
-                except Exception:
-                    return None
-            
-            final_transcript = run_deepgram_stt()
-            if not final_transcript:
-                print("Deepgram failed. Falling back to Whisper...")
-                whisper_res = run_whisper()
-                final_transcript = whisper_res["text"] if whisper_res else ""
+            try:
+                dg_response = requests.post(
+                    dg_url,
+                    headers={
+                        "Authorization": f"Token {DEEPGRAM_API_KEY}",
+                        "Content-Type": f"audio/{request.audioFormat}",
+                    },
+                    data=audio_bytes,
+                    timeout=60,
+                )
+                dg_response.raise_for_status()
+                dg_json = dg_response.json()
+                final_transcript = dg_json["results"]["channels"][0]["alternatives"][0]["transcript"]
+            except Exception as dg_err:
+                print(f"Deepgram transcription error: {dg_err}")
+                return {"status": "error", "message": f"Deepgram transcription failed: {str(dg_err)}"}
 
             transcript = final_transcript.strip()
             if not transcript:
-                return {"status": "error", "message": "Transcription failed"}
+                return {"status": "error", "message": "Transcription produced empty result"}
 
             # Normalization Layer
             transcript = transcript.replace("hu gaya", "has been").replace("iruku", "is available")
@@ -283,10 +260,8 @@ async def analyze_call(
                 keywords=keywords
             )
             
-        finally:
-            if temp_input_path and os.path.exists(temp_input_path):
-                try: os.remove(temp_input_path)
-                except: pass
+        except Exception as inner_e:
+            return {"status": "error", "message": f"Processing error: {str(inner_e)}"}
                     
     except Exception as e:
         return {"status": "error", "message": f"Server error: {str(e)}"}
