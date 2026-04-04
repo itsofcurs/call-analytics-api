@@ -24,6 +24,11 @@ app.add_middleware(
 app.include_router(analyze_router)
 
 
+@app.get("/")
+async def root():
+    return {"message": "AI Call Analytics API is running. Visit /docs for documentation."}
+
+
 @app.get("/health")
 async def health_check():
     return {"status": "ok"}
