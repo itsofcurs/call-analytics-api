@@ -213,12 +213,20 @@ async def get_job_status(task_id: str, _: bool = Depends(verify_api_key)):
     return JOBS[task_id]
 
 
+def extract_keywords(text: str, summary: str = "") -> List[str]:
+    # Simple logic to extract capitalized terms or nouns
+    combined = text + " " + summary
+    # Extract words that are likely important (proper nouns, capitalized, or part of script)
+    potential = re.findall(r'\b[A-Z][a-zA-Z]{3,}\b|\b(?:EMI|IIT|AI|IT|ASR)\b', combined)
+    # Deduplicate and return top 10
+    return list(dict.fromkeys(potential))[:10]
+
 @router.post("/api/call-analytics", response_model=CallAnalysisResponse)
 @router.post("/analyze-call", response_model=CallAnalysisResponse)
 async def call_analytics(request: CallAnalysisRequest, r_header: Request):
     # Strict Rubric Auth Check
     api_key = r_header.headers.get("x-api-key") or r_header.headers.get("Authorization")
-    actual_key = os.getenv("API_KEY", "hackathon123")
+    actual_key = os.getenv("API_KEY", "sk_track3_987654321")
     
     # If the key contains "Bearer ", strip it for comparison
     if api_key and api_key.startswith("Bearer "):
@@ -240,36 +248,27 @@ async def call_analytics(request: CallAnalysisRequest, r_header: Request):
         llm_data = analyze_call_with_llm(transcript)
         
         # Semantic mapping to rubric enums
-        sop_raw = llm_data.get("sop", {})
+        sop_raw = llm_data.get("sop_validation", {})
         sop_val = SopValidation(
             greeting=bool(sop_raw.get("greeting", False)),
             identification=bool(sop_raw.get("identification", False)),
             problemStatement=bool(sop_raw.get("problemStatement", False)),
             solutionOffering=bool(sop_raw.get("solutionOffering", False)),
             closing=bool(sop_raw.get("closing", False)),
-            complianceScore=float(sop_raw.get("score", 0.0)),
-            adherenceStatus="FOLLOWED" if sop_raw.get("passed") else "NOT_FOLLOWED",
+            complianceScore=float(sop_raw.get("complianceScore", 0.0)),
+            adherenceStatus=str(sop_raw.get("adherenceStatus", "NOT_FOLLOWED")),
             explanation=sop_raw.get("explanation") or "Analysis complete."
         )
         
         ana_raw = llm_data.get("analytics", {})
         # Ensure enum exact match for Rubric
-        pref = str(ana_raw.get("preference", "NONE")).upper()
-        if "EMI" in pref: pref = "EMI"
-        elif "FULL" in pref: pref = "FULL_PAYMENT"
-        elif "PARTIAL" in pref: pref = "PARTIAL_PAYMENT"
-        elif "DOWN" in pref: pref = "DOWN_PAYMENT"
-        else: pref = "NONE"
-
-        rej = str(ana_raw.get("reason", "NONE")).upper().replace(" ", "_")
-        allowed_rejections = ["HIGH_INTEREST", "BUDGET_CONSTRAINTS", "ALREADY_PAID", "NOT_INTERESTED", "NONE"]
-        if rej not in allowed_rejections:
-            rej = "NONE"
+        pref = str(ana_raw.get("paymentPreference", "NONE")).upper()
+        rej = str(ana_raw.get("rejectionReason", "NONE")).upper().replace(" ", "_")
 
         analytics = AnalyticsData(
             paymentPreference=pref,
             rejectionReason=rej,
-            sentiment=llm_data.get("sentiment") or "Neutral"
+            sentiment=ana_raw.get("sentiment") or llm_data.get("sentiment") or "Neutral"
         )
         
         keywords = llm_data.get("keywords") or extract_keywords(transcript, llm_data.get("summary", ""))
@@ -299,7 +298,8 @@ async def call_analytics(request: CallAnalysisRequest, r_header: Request):
         )
     except Exception as e:
         print(f"Compliance API Error: {e}")
-        raise HTTPException(status_code=500, detail="Internal AI Analysis Error")
+        # Return the actual error temporarily to help the user debug on Render
+        raise HTTPException(status_code=500, detail=f"AI Engine Error: {str(e)}")
 
 @router.get("/documents")
 async def get_documents(_: bool = Depends(verify_api_key)):
