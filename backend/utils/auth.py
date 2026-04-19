@@ -4,10 +4,14 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-def verify_api_key(x_api_key: str = Header(None, alias="x-api-key")):
-    print("DEBUG HEADER RECEIVED:", x_api_key)
+def verify_api_key(
+    x_api_key: str = Header(None, alias="x-api-key"),
+    authorization: str = Header(None, alias="Authorization")
+):
+    provided_key = x_api_key or authorization
+    print("DEBUG HEADER RECEIVED:", provided_key)
 
-    if not x_api_key:
+    if not provided_key:
         raise HTTPException(status_code=401, detail="Missing API key")
 
     # Only use ENV key (secure)
@@ -16,7 +20,7 @@ def verify_api_key(x_api_key: str = Header(None, alias="x-api-key")):
     if not API_KEY:
         raise HTTPException(status_code=500, detail="Server API key not configured")
 
-    if x_api_key.strip() != API_KEY:
+    if provided_key.strip() != API_KEY:
         raise HTTPException(status_code=401, detail="Invalid API key")
 
     return True

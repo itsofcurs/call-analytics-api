@@ -3,7 +3,7 @@ from collections import Counter
 from typing import Dict, List
 
 PAYMENT_PATTERNS = {
-    "emi": [r"\bemi\b", r"installment", r"monthly payment"],
+    "emi": [r"\bemi\b", r"\bema\b", r"installment", r"monthly payment"],
     "full": [r"full payment", r"paid in full", r"one time"],
     "partial": [r"partial payment", r"part payment", r"advance"],
     "down": [r"down payment", r"token amount", r"booking amount"],

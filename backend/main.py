@@ -1,17 +1,14 @@
 import sys
 import os
-# Add the current directory (backend) to the Python path so sub-packages work correctly
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-
-from fastapi import FastAPI
 from dotenv import load_dotenv
-from fastapi.middleware.cors import CORSMiddleware
 
-from routes.analyze import router as analyze_router
-
-# Load environment variables from the .env file in the current directory
+# Load environment variables FIRST before any other imports
 dotenv_path = os.path.join(os.path.dirname(__file__), ".env")
 load_dotenv(dotenv_path)
+
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from routes.analyze import router as analyze_router
 
 app = FastAPI(title="AI Document Analysis API", version="0.1.0")
 

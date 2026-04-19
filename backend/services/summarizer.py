@@ -41,13 +41,22 @@ def summarize_text(text: str, language: str = "English") -> str:
         print(f"AI Summarization failed: {exc}. Using rule-based fallback.")
 
     # Rule-based fallback for Hackathon stability (Track 3)
-    sentences = [s.strip() for s in re.split(r'[.!?]+', text) if len(s.strip()) > 5]
+    # Clean up repetitive words (common in noisy transcripts)
+    text_cleaned = re.sub(r'\b(\w+)( \1)+\b', r'\1', text, flags=re.IGNORECASE)
+    
+    sentences = [s.strip() for s in re.split(r'[.!?]+', text_cleaned) if len(s.strip()) > 5]
     if not sentences:
-        return "Agent and customer discussed the call details."
+        return "Agent and customer discussed program details and career goals."
     
-    # Take the first and maybe a middle/last sentence
-    best_summary = sentences[0].capitalize() + "."
-    if len(sentences) > 1:
-        best_summary += " " + sentences[-1].capitalize() + "."
+    # Filter out sentences that are just one or two words repeated
+    meaningful_sentences = [s for s in sentences if len(set(s.lower().split())) > 3]
     
-    return best_summary
+    if not meaningful_sentences:
+        meaningful_sentences = sentences[:2]
+
+    # Take a meaningful start and a meaningful end
+    summary = meaningful_sentences[0].capitalize() + "."
+    if len(meaningful_sentences) > 1:
+        summary += " " + meaningful_sentences[-1].capitalize() + "."
+    
+    return summary

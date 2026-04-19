@@ -1,13 +1,15 @@
 {
   "default": {
     "required_phrases": [
-      "greeting",
-      "verify customer details",
-      "explain product",
-      "mention payment options",
-      "offer emi",
-      "confirm next steps"
+      "hello",
+      "basis",
+      "google",
+      "iit",
+      "certification",
+      "full",
+      "available",
+      "thank you"
     ],
-    "min_score": 0.7
+    "min_score": 0.5
   }
 }

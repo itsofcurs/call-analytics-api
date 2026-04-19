@@ -7,6 +7,7 @@ const navItems = [
   { label: 'Insights', to: '/insights', icon: 'analytics' },
   { label: 'Uploads', to: '/uploads', icon: 'cloud_upload' },
   { label: 'Reports', to: '/reports', icon: 'assessment' },
+  { label: 'Analytics', to: '/analytics', icon: 'monitoring' },
 ];
 
 const Dashboard = () => (
